@@ -130,6 +130,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             user = state.user;
           } else if (state is AuthAuthenticated) {
             user = state.authResponse.user;
+          } else if (state is ProfileUpdateSuccess) {
+            user = state.user;
           }
 
           if (user == null) {

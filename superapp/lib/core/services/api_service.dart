@@ -17,10 +17,18 @@ class ApiService {
   Dio get dio => _dio;
 
   // Generic GET request
-  Future<Response> get(String path, {Map<String, dynamic>? queryParameters, Options? options}) async {
+  Future<Response> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) async {
     try {
       print('DEBUG: GET Request to: $path');
-      final response = await _dio.get(path, queryParameters: queryParameters, options: options);
+      final response = await _dio.get(
+        path,
+        queryParameters: queryParameters,
+        options: options,
+      );
       print('DEBUG: GET Response from: $path');
       print('DEBUG: Response Data: ${response.data}');
       return response;
@@ -50,14 +58,44 @@ class ApiService {
   // Error handling
   String _handleError(DioException e) {
     if (e.response != null) {
-      // Handle validation errors from backend if any
-      if (e.response?.data is Map && e.response?.data['errors'] != null) {
-        final errors = e.response?.data['errors'] as Map;
-        return errors.values.first.first.toString();
+      final data = e.response?.data;
+      if (data is Map) {
+        // Handle Laravel style validation errors: {"message": "...", "errors": {"field": ["error"]}}
+        if (data['errors'] != null && data['errors'] is Map) {
+          final errors = data['errors'] as Map;
+          if (errors.isNotEmpty) {
+            final firstError = errors.values.first;
+            if (firstError is List && firstError.isNotEmpty) {
+              return firstError.first.toString();
+            } else if (firstError is String) {
+              return firstError;
+            } else if (firstError is Map && firstError.isNotEmpty) {
+              // Sometimes it's nested
+              return firstError.values.first.toString();
+            }
+          }
+        }
+        // Handle common message field
+        if (data['message'] != null && data['message'].toString().isNotEmpty) {
+          return data['message'].toString();
+        }
+        // Handle error field
+        if (data['error'] != null && data['error'].toString().isNotEmpty) {
+          return data['error'].toString();
+        }
       }
-      return e.response?.data['message'] ?? "Something went wrong";
+      return "Error: ${e.response?.statusCode} - ${e.response?.statusMessage ?? 'Something went wrong'}";
     }
-    return "Network error: ${e.message}";
+
+    if (e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.receiveTimeout ||
+        e.type == DioExceptionType.sendTimeout) {
+      return "Connection timed out. Please check your internet.";
+    } else if (e.type == DioExceptionType.connectionError) {
+      return "No internet connection.";
+    }
+
+    return "Something went wrong. Please try again.";
   }
 }
 

@@ -21,24 +21,27 @@ class CustomToast extends StatelessWidget {
     late OverlayEntry entry;
 
     entry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: 50,
-        right: 20, // Changed to right side
-        width: MediaQuery.of(context).size.width * 0.8, // Set a max width
-        child: Material(
-          color: Colors.transparent,
-          child: CustomToast(
-            title: title,
-            message: message,
-            isError: isError,
-            onClose: () {
-              if (entry.mounted) {
-                entry.remove();
-              }
-            },
+      builder: (context) {
+        final width = MediaQuery.of(context).size.width;
+        return Positioned(
+          top: 50,
+          left: width * 0.1, // Center by giving 10% margin on each side (width is 80%)
+          width: width * 0.8,
+          child: Material(
+            color: Colors.transparent,
+            child: CustomToast(
+              title: title,
+              message: message,
+              isError: isError,
+              onClose: () {
+                if (entry.mounted) {
+                  entry.remove();
+                }
+              },
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
 
     overlay.insert(entry);

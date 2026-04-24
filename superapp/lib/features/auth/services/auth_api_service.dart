@@ -54,9 +54,12 @@ class AuthApiService {
         ApiConstants.profile,
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
-      // The response structure might be different based on the provided JSON
-      // If the API returns the user object directly:
-      return UserModel.fromJson(response.data);
+      // Handle nested user object if present
+      final responseData = response.data;
+      if (responseData is Map && responseData.containsKey('user')) {
+        return UserModel.fromJson(responseData['user']);
+      }
+      return UserModel.fromJson(responseData);
     } catch (e) {
       rethrow;
     }
@@ -83,7 +86,14 @@ class AuthApiService {
         data: FormData.fromMap(data),
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
-      return UserModel.fromJson(response.data);
+      
+      // Handle nested user object if present
+      final responseData = response.data;
+      if (responseData is Map && responseData.containsKey('user')) {
+        return UserModel.fromJson(responseData['user']);
+      }
+      
+      return UserModel.fromJson(responseData);
     } catch (e) {
       rethrow;
     }

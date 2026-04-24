@@ -48,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
               (route) => false,
             );
           } else if (state is AuthFailure) {
+            print('DEBUG: AuthFailure on LoginScreen: ${state.error}');
             CustomToast.show(
               context,
               title: "Error",
@@ -56,146 +57,186 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
         },
-        child: SafeArea(
-          bottom: false,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      children: [
-                        SizedBox(height: constraints.maxHeight * 0.12),
-                        Center(
-                          child: Image.asset(
-                            AppImages.loginScreenLogo,
-                            fit: BoxFit.contain,
-                            width: 250,
-                            height: 64,
+        child: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            return Stack(
+              children: [
+                SafeArea(
+                  bottom: false,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
                           ),
-                        ),
-                        SizedBox(height: constraints.maxHeight * 0.12),
-                        Expanded(
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
-                            decoration: const BoxDecoration(
-                              color: AppColors.secondary,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(32),
-                                topRight: Radius.circular(32),
-                              ),
-                            ),
+                          child: IntrinsicHeight(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  "Welcome Back",
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 26,
-                                    fontFamily: 'SF Pro',
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  "Login to continue your EV journey",
-                                  style: TextStyle(
-                                    color: Colors.grey.shade400,
-                                    fontSize: 16,
-                                    fontFamily: 'SF Pro',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                const SizedBox(height: 40),
-                                CustomTextField(
-                                  controller: _emailController,
-                                  hintText: "Email Address",
-                                  prefixIcon: Icons.email_outlined,
-                                  keyboardType: TextInputType.emailAddress,
-                                ),
-                                const SizedBox(height: 16),
-                                CustomTextField(
-                                  controller: _passwordController,
-                                  hintText: "Password",
-                                  prefixIcon: Icons.lock_outline,
-                                  obscureText: true,
-                                ),
-                                const SizedBox(height: 16),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    "Forgot Password?",
-                                    style: TextStyle(
-                                      color: Colors.grey.shade400,
-                                      fontSize: 14,
-                                      fontFamily: 'SF Pro',
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 32),
-                                BlocBuilder<AuthBloc, AuthState>(
-                                  builder: (context, state) {
-                                    return Btn(
-                                      text: "Login",
-                                      isLoading: state is AuthLoading,
-                                      onTap: () {
-                                        if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-                                          CustomToast.show(
-                                            context,
-                                            title: "Error",
-                                            message: "Please fill all fields",
-                                            isError: true,
-                                          );
-                                          return;
-                                        }
-                                        context.read<AuthBloc>().add(
-                                              LoginEvent(
-                                                email: _emailController.text.trim(),
-                                                password: _passwordController.text,
-                                              ),
-                                            );
-                                      },
-                                    );
-                                  },
-                                ),
-                                const Spacer(),
+                                SizedBox(height: constraints.maxHeight * 0.12),
                                 Center(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const RegisterScreen(),
+                                  child: Image.asset(
+                                    AppImages.loginScreenLogo,
+                                    fit: BoxFit.contain,
+                                    width: 250,
+                                    height: 64,
+                                  ),
+                                ),
+                                SizedBox(height: constraints.maxHeight * 0.12),
+                                Expanded(
+                                  child: Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 30,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.secondary,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(32),
+                                        topRight: Radius.circular(32),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Welcome Back",
+                                          style: TextStyle(
+                                            color: AppColors.primary,
+                                            fontSize: 26,
+                                            fontFamily: 'SF Pro',
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      );
-                                    },
-                                    child: Text.rich(
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: "Don't have an account? ",
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          "Login to continue your EV journey",
+                                          style: TextStyle(
+                                            color: Colors.grey.shade400,
+                                            fontSize: 16,
+                                            fontFamily: 'SF Pro',
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 40),
+                                        CustomTextField(
+                                          controller: _emailController,
+                                          hintText: "Email Address",
+                                          prefixIcon: Icons.email_outlined,
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                        ),
+                                        const SizedBox(height: 16),
+                                        CustomTextField(
+                                          controller: _passwordController,
+                                          hintText: "Password",
+                                          prefixIcon: Icons.lock_outline,
+                                          obscureText: true,
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Text(
+                                            "Forgot Password?",
                                             style: TextStyle(
                                               color: Colors.grey.shade400,
                                               fontSize: 14,
                                               fontFamily: 'SF Pro',
-                                              fontWeight: FontWeight.w400,
+                                              fontWeight: FontWeight.w500,
                                             ),
                                           ),
-                                          const TextSpan(
-                                            text: "Sign Up",
-                                            style: TextStyle(
-                                              color: AppColors.thirdcolor,
-                                              fontSize: 14,
-                                              fontFamily: 'SF Pro',
-                                              fontWeight: FontWeight.bold,
+                                        ),
+                                        const SizedBox(height: 32),
+                                        Btn(
+                                          text: "Login",
+                                          isLoading: state is AuthLoading,
+                                          onTap: () {
+                                            final email = _emailController.text
+                                                .trim();
+                                            final password =
+                                                _passwordController.text;
+
+                                            if (email.isEmpty ||
+                                                password.isEmpty) {
+                                              CustomToast.show(
+                                                context,
+                                                title: "Error",
+                                                message:
+                                                    "Please fill all fields",
+                                                isError: true,
+                                              );
+                                              return;
+                                            }
+
+                                            // Simple email regex
+                                            final emailRegex = RegExp(
+                                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                            );
+                                            if (!emailRegex.hasMatch(email)) {
+                                              CustomToast.show(
+                                                context,
+                                                title: "Invalid Email",
+                                                message:
+                                                    "Please enter a valid email address",
+                                                isError: true,
+                                              );
+                                              return;
+                                            }
+
+                                            context.read<AuthBloc>().add(
+                                              LoginEvent(
+                                                email: email,
+                                                password: password,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        const Spacer(),
+                                        Center(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const RegisterScreen(),
+                                                ),
+                                              );
+                                            },
+                                            child: Text.rich(
+                                              TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text:
+                                                        "Don't have an account? ",
+                                                    style: TextStyle(
+                                                      color:
+                                                          Colors.grey.shade400,
+                                                      fontSize: 14,
+                                                      fontFamily: 'SF Pro',
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  const TextSpan(
+                                                    text: "Sign Up",
+                                                    style: TextStyle(
+                                                      color:
+                                                          AppColors.thirdcolor,
+                                                      fontSize: 14,
+                                                      fontFamily: 'SF Pro',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -203,13 +244,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                 ),
-              );
-            },
-          ),
+                if (state is AuthLoading)
+                  Positioned.fill(
+                    child: Container(color: Colors.black.withOpacity(0.3)),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );

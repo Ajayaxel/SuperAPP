@@ -93,7 +93,7 @@ class MyApp extends StatelessWidget {
                     state is ProfileUpdateSuccess) {
                   return const BottomNavBar();
                 }
-                if (state is AuthUnauthenticated || state is AuthFailure) {
+                if (state is AuthUnauthenticated || state is AuthFailure || state is AuthLoading) {
                   return const LoginScreen();
                 }
                 return const Scaffold(

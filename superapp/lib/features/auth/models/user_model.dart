@@ -21,9 +21,9 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id']?.toString() ?? '0') ?? 0,
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
       profileImageUrl: json['profile_image_url'],
       roleName: json['role_name'] ?? '',
       verification: json['verification'],
@@ -50,9 +50,9 @@ class Role {
 
   factory Role.fromJson(Map<String, dynamic> json) {
     return Role(
-      id: json['id'],
-      name: json['name'],
-      guardName: json['guard_name'],
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id']?.toString() ?? '0') ?? 0,
+      name: json['name'] ?? '',
+      guardName: json['guard_name'] ?? '',
       pivot: json['pivot'] != null ? Pivot.fromJson(json['pivot']) : null,
     );
   }

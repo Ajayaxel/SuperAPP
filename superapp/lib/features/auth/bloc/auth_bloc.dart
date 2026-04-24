@@ -89,7 +89,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         profileImagePath: event.profileImagePath,
       );
       emit(ProfileUpdateSuccess(user, "Profile updated successfully"));
-      // Also emit ProfileLoaded to update the UI
+      // Ensure the main authentication state is updated with the new user data
+      emit(AuthAuthenticated(AuthResponse(user: user, token: '')));
       emit(ProfileLoaded(user));
     } catch (e) {
       emit(AuthFailure(e.toString()));
