@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ^3.10.7
@@ -35,6 +35,16 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_animate: ^4.5.2
+  geolocator: ^14.0.2
+  permission_handler: ^12.0.1
+  image_picker: ^1.2.1
+  dio: ^5.9.2
+  shared_preferences: ^2.5.5
+  flutter_bloc: ^9.1.1
+  shimmer: ^3.0.0
+  intl: ^0.20.2
+  equatable: ^2.0.8
+  google_maps_flutter: ^2.17.0
 
 dev_dependencies:
   flutter_test:
@@ -63,8 +73,10 @@ flutter:
   assets:
     - images/
     - images/login/
-    - images/spalsh/
+    - images/splash/
     - images/icons/
+    - images/marketplace/
+    - images/Profile/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -73,51 +85,30 @@ flutter:
   # https://flutter.dev/to/asset-from-package
 
   fonts:
-    - family: Lufga
+    - family: SF-PRO
       fonts:
-        - asset: font/lufga/LufgaThin.ttf
-          weight: 100
-        - asset: font/lufga/LufgaThinItalic.ttf
+        - asset: font/SF-PRO/SFPRODISPLAYTHINITALIC.OTF
           style: italic
           weight: 100
-        - asset: font/lufga/LufgaExtraLight.ttf
-          weight: 200
-        - asset: font/lufga/LufgaExtraLightItalic.ttf
+        - asset: font/SF-PRO/SFPRODISPLAYULTRALIGHTITALIC.OTF
           style: italic
           weight: 200
-        - asset: font/lufga/LufgaLight.ttf
-          weight: 300
-        - asset: font/lufga/LufgaLightItalic.ttf
+        - asset: font/SF-PRO/SFPRODISPLAYLIGHTITALIC.OTF
           style: italic
           weight: 300
-        - asset: font/lufga/LufgaRegular.ttf
+        - asset: font/SF-PRO/SFPRODISPLAYREGULAR.OTF
           weight: 400
-        - asset: font/lufga/LufgaItalic.ttf
-          style: italic
-          weight: 400
-        - asset: font/lufga/LufgaMedium.ttf
+        - asset: font/SF-PRO/SFPRODISPLAYMEDIUM.OTF
           weight: 500
-        - asset: font/lufga/LufgaMediumItalic.ttf
-          style: italic
-          weight: 500
-        - asset: font/lufga/LufgaSemiBold.ttf
-          weight: 600
-        - asset: font/lufga/LufgaSemiBoldItalic.ttf
+        - asset: font/SF-PRO/SFPRODISPLAYSEMIBOLDITALIC.OTF
           style: italic
           weight: 600
-        - asset: font/lufga/LufgaBold.ttf
+        - asset: font/SF-PRO/SFPRODISPLAYBOLD.OTF
           weight: 700
-        - asset: font/lufga/LufgaBoldItalic.ttf
-          style: italic
-          weight: 700
-        - asset: font/lufga/LufgaExtraBold.ttf
-          weight: 800
-        - asset: font/lufga/LufgaExtraBoldItalic.ttf
+        - asset: font/SF-PRO/SFPRODISPLAYHEAVYITALIC.OTF
           style: italic
           weight: 800
-        - asset: font/lufga/LufgaBlack.ttf
-          weight: 900
-        - asset: font/lufga/LufgaBlackItalic.ttf
+        - asset: font/SF-PRO/SFPRODISPLAYBLACKITALIC.OTF
           style: italic
           weight: 900
 

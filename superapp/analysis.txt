@@ -1,0 +1,36 @@
+Analyzing superapp...                                           
+
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/constants/btn.dart:28:55 • deprecated_member_use
+warning • The value of the field '_userKey' isn't used • lib/core/services/storage_service.dart:5:23 • unused_field
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/utils/custom_toast.dart:64:33 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/utils/custom_toast.dart:76:73 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/core/widgets/custom_dropdown.dart:26:11 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/widgets/custom_dropdown.dart:41:58 • deprecated_member_use
+warning • Unused import: 'package:superapp/features/auth/models/user_model.dart' • lib/features/auth/bloc/auth_event.dart:1:8 • unused_import
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/bootmnav/bottm_navbar.dart:91:37 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/chat/screens/message_detail_screen.dart:115:48 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/choose_category_sheet.dart:66:37 • deprecated_member_use
+warning • Unused import: 'package:flutter_animate/flutter_animate.dart' • lib/features/home/widgets/final_listing_sheet.dart:3:8 • unused_import
+warning • The value of the field '_selectedHP' isn't used • lib/features/home/widgets/final_listing_sheet.dart:36:15 • unused_field
+warning • The value of the field '_selectedSteering' isn't used • lib/features/home/widgets/final_listing_sheet.dart:37:17 • unused_field
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/final_listing_sheet.dart:186:29 • deprecated_member_use
+   info • Unnecessary use of multiple underscores • lib/features/home/widgets/final_listing_sheet.dart:221:37 • unnecessary_underscores
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/final_listing_sheet.dart:250:59 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:438:64 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:474:64 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:510:64 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:681:65 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:750:65 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:825:65 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:882:68 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:993:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:995:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/select_city_sheet.dart:67:37 • deprecated_member_use
+warning • Unused import: 'package:superapp/Themes/app_colors.dart' • lib/features/marketplace/screens/sell_car_screen.dart:3:8 • unused_import
+warning • Unused import: 'package:superapp/Themes/app_colors.dart' • lib/features/profile/widgets/profile_skeleton.dart:3:8 • unused_import
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/profile/widgets/profile_skeleton.dart:11:30 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/profile/widgets/profile_skeleton.dart:12:35 • deprecated_member_use
+warning • Unused import: 'package:superapp/features/profile/screens/profile_screen.dart' • lib/main.dart:15:8 • unused_import
+warning • Unused import: 'package:superapp/features/profile/widgets/profile_skeleton.dart' • lib/main.dart:16:8 • unused_import
+warning • Unused import: 'package:superapp/features/profile/screens/edit_profile_screen.dart' • lib/main.dart:17:8 • unused_import
+

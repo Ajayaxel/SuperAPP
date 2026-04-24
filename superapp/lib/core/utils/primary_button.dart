@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
@@ -21,8 +20,8 @@ class PrimaryButton extends StatelessWidget {
       width: double.infinity,
       height: height,
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(height / 2),
+        color: Color(0xff0D4226),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: ElevatedButton(
         onPressed: onPressed,
@@ -38,7 +37,8 @@ class PrimaryButton extends StatelessWidget {
           style: TextStyle(
             color: Colors.white,
             fontSize: fontSize,
-            fontWeight: FontWeight.w600,
+            fontFamily: 'SF-PRO',
+            fontWeight: FontWeight.w400,
           ),
         ),
       ),
