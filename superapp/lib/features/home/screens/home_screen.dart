@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:superapp/Themes/app_colors.dart';
+import 'package:superapp/features/auth/bloc/auth_bloc.dart';
+import 'package:superapp/features/auth/bloc/auth_event.dart';
 import 'package:superapp/features/home/widgets/marketplace_home_widgets.dart';
 import 'package:superapp/features/home/widgets/marketplace_product_widgets.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch user profile to ensure name is updated on home screen
+    context.read<AuthBloc>().add(GetProfileEvent());
+  }
 
   @override
   Widget build(BuildContext context) {

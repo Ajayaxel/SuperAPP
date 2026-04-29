@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../auth/bloc/auth_bloc.dart';
+import '../../auth/bloc/auth_state.dart';
+import '../../auth/models/user_model.dart';
 import '../../../Themes/app_colors.dart';
 import '../../../Themes/app_images.dart';
 
@@ -7,56 +11,78 @@ class HeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 50,
-          height: 50,
-          decoration: const ShapeDecoration(
-            image: DecorationImage(
-              image: NetworkImage(
-                "https://img.freepik.com/premium-vector/man-avatar-profile-round-icon_24640-14044.jpg?w=360",
-              ),
-              fit: BoxFit.cover,
-            ),
-            shape: OvalBorder(),
-          ),
-        ),
-        const SizedBox(width: 10),
-        const Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        UserModel? user;
+        if (state is ProfileLoaded) {
+          user = state.user;
+        } else if (state is AuthAuthenticated) {
+          user = state.authResponse.user;
+        } else if (state is ProfileUpdateSuccess) {
+          user = state.user;
+        }
+
+        final String userName = user?.name ?? 'Loading...';
+        final String? profileImageUrl = user?.profileImageUrl;
+
+        return Row(
           children: [
-            Text(
-              'Good morning!',
-              style: TextStyle(
-                color: AppColors.primary,
-                fontSize: 16,
-                fontFamily: 'SF-PRO',
-                fontWeight: FontWeight.w500,
-                height: 1,
+            Container(
+              width: 50,
+              height: 50,
+              decoration: ShapeDecoration(
+                image: DecorationImage(
+                  image: profileImageUrl != null && profileImageUrl.isNotEmpty
+                      ? NetworkImage(profileImageUrl)
+                      : const NetworkImage(
+                          "https://img.freepik.com/premium-vector/man-avatar-profile-round-icon_24640-14044.jpg?w=360",
+                        ),
+                  fit: BoxFit.cover,
+                ),
+                shape: const OvalBorder(),
               ),
             ),
-            Text(
-              'Alex Johnson',
-              style: TextStyle(
-                color: AppColors.primary,
-                fontSize: 14,
-                fontFamily: 'SF-PRO',
-                fontWeight: FontWeight.w600,
-              ),
+            const SizedBox(width: 10),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Good morning!',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 16,
+                    fontFamily: 'SF-PRO',
+                    fontWeight: FontWeight.w500,
+                    height: 1,
+                  ),
+                ),
+                Text(
+                  userName,
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 14,
+                    fontFamily: 'SF-PRO',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            const Icon(
+              Icons.favorite_outline,
+              color: AppColors.primary,
+              size: 24,
+            ),
+            const SizedBox(width: 10),
+            const Icon(
+              Icons.notifications_none,
+              color: AppColors.primary,
+              size: 24,
             ),
           ],
-        ),
-        const Spacer(),
-        const Icon(Icons.favorite_outline, color: AppColors.primary, size: 24),
-        const SizedBox(width: 10),
-        const Icon(
-          Icons.notifications_none,
-          color: AppColors.primary,
-          size: 24,
-        ),
-      ],
+        );
+      },
     );
   }
 }
