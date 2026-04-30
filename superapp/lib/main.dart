@@ -12,6 +12,14 @@ import 'package:superapp/core/services/api_service.dart';
 import 'package:superapp/features/marketplace/bloc/sell_car_bloc.dart';
 import 'package:superapp/features/marketplace/repository/marketplace_repository.dart';
 import 'package:superapp/features/marketplace/services/marketplace_api_service.dart';
+import 'package:superapp/features/home/bloc/home_bloc.dart';
+import 'package:superapp/features/home/repository/home_repository.dart';
+import 'package:superapp/features/favourite/repository/favorite_repository.dart';
+import 'package:superapp/features/favourite/bloc/favorite_bloc.dart';
+import 'package:superapp/features/chat/repository/chat_repository.dart';
+import 'package:superapp/features/chat/bloc/chat_bloc.dart';
+import 'package:superapp/features/notifications/repository/notification_repository.dart';
+import 'package:superapp/features/notifications/bloc/notification_bloc.dart';
 import 'package:superapp/features/bootmnav/bottm_navbar.dart';
 import 'package:superapp/core/widgets/app_loading.dart';
 
@@ -48,6 +56,18 @@ class MyApp extends StatelessWidget {
             MarketplaceApiService(apiService),
           ),
         ),
+        RepositoryProvider(
+          create: (context) => HomeRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => FavoriteRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => ChatRepository(),
+        ),
+        RepositoryProvider(
+          create: (context) => NotificationRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -59,6 +79,26 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => SellCarBloc(
               context.read<MarketplaceRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => HomeBloc(
+              repository: context.read<HomeRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => FavoriteBloc(
+              repository: context.read<FavoriteRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => ChatBloc(
+              repository: context.read<ChatRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => NotificationBloc(
+              repository: context.read<NotificationRepository>(),
             ),
           ),
         ],

@@ -55,6 +55,22 @@ class ApiService {
     }
   }
 
+  // Generic DELETE request
+  Future<Response> delete(String path, {dynamic data, Options? options}) async {
+    try {
+      print('DEBUG: DELETE Request to: $path');
+      final response = await _dio.delete(path, data: data, options: options);
+      print('DEBUG: DELETE Response from: $path');
+      print('DEBUG: Response Data: ${response.data}');
+      return response;
+    } on DioException catch (e) {
+      print('DEBUG: DELETE Error from: $path');
+      print('DEBUG: Error Response: ${e.response?.data}');
+      throw _handleError(e);
+    }
+  }
+
+
   // Error handling
   String _handleError(DioException e) {
     if (e.response != null) {

@@ -5,6 +5,11 @@ import '../../auth/bloc/auth_state.dart';
 import '../../auth/models/user_model.dart';
 import '../../../Themes/app_colors.dart';
 import '../../../Themes/app_images.dart';
+import 'package:superapp/core/widgets/skeleton_loading.dart';
+import 'package:superapp/features/notifications/screens/notification_screen.dart';
+import 'package:superapp/features/favourite/screens/favourite_screen.dart';
+import 'package:superapp/features/chat/bloc/chat_bloc.dart';
+import 'package:superapp/features/chat/bloc/chat_event.dart';
 
 class HeaderWidget extends StatelessWidget {
   const HeaderWidget({super.key});
@@ -22,26 +27,30 @@ class HeaderWidget extends StatelessWidget {
           user = state.user;
         }
 
-        final String userName = user?.name ?? 'Loading...';
+        final bool isLoading = state is ProfileLoading || state is AuthLoading;
+        final String userName = user?.name ?? '';
         final String? profileImageUrl = user?.profileImageUrl;
 
         return Row(
           children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: ShapeDecoration(
-                image: DecorationImage(
-                  image: profileImageUrl != null && profileImageUrl.isNotEmpty
-                      ? NetworkImage(profileImageUrl)
-                      : const NetworkImage(
-                          "https://img.freepik.com/premium-vector/man-avatar-profile-round-icon_24640-14044.jpg?w=360",
-                        ),
-                  fit: BoxFit.cover,
-                ),
-                shape: const OvalBorder(),
-              ),
-            ),
+            isLoading
+                ? const SkeletonLoading(width: 50, height: 50, borderRadius: 25)
+                : Container(
+                    width: 50,
+                    height: 50,
+                    decoration: ShapeDecoration(
+                      image: DecorationImage(
+                        image: profileImageUrl != null &&
+                                profileImageUrl.isNotEmpty
+                            ? NetworkImage(profileImageUrl)
+                            : const NetworkImage(
+                                "https://img.freepik.com/premium-vector/man-avatar-profile-round-icon_24640-14044.jpg?w=360",
+                              ),
+                        fit: BoxFit.cover,
+                      ),
+                      shape: const OvalBorder(),
+                    ),
+                  ),
             const SizedBox(width: 10),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -57,28 +66,52 @@ class HeaderWidget extends StatelessWidget {
                     height: 1,
                   ),
                 ),
-                Text(
-                  userName,
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 14,
-                    fontFamily: 'SF-PRO',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                const SizedBox(height: 4),
+                isLoading
+                    ? const SkeletonLoading(width: 80, height: 16)
+                    : Text(
+                        userName,
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 14,
+                          fontFamily: 'SF-PRO',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
               ],
             ),
             const Spacer(),
-            const Icon(
-              Icons.favorite_outline,
-              color: AppColors.primary,
-              size: 24,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FavouriteScreen()),
+                );
+              },
+              child: const Icon(
+                Icons.favorite_outline,
+                color: AppColors.primary,
+                size: 24,
+              ),
             ),
             const SizedBox(width: 10),
-            const Icon(
-              Icons.notifications_none,
-              color: AppColors.primary,
-              size: 24,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const NotificationScreen()),
+                ).then((_) {
+                  if (context.mounted) {
+                    // Refresh chats when coming back from notifications to ensure data is updated
+                    context.read<ChatBloc>().add(FetchChatsEvent());
+                  }
+                });
+              },
+              child: const Icon(
+                Icons.notifications_none,
+                color: AppColors.primary,
+                size: 24,
+              ),
             ),
           ],
         );

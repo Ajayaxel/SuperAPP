@@ -1,0 +1,89 @@
+Analyzing superapp...                                           
+
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/constants/btn.dart:28:55 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/core/services/api_service.dart:26:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/services/api_service.dart:32:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/services/api_service.dart:33:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/services/api_service.dart:36:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/services/api_service.dart:37:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/services/api_service.dart:45:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/services/api_service.dart:46:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/services/api_service.dart:48:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/services/api_service.dart:49:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/services/api_service.dart:52:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/core/services/api_service.dart:53:7 • avoid_print
+warning • The value of the field '_userKey' isn't used • lib/core/services/storage_service.dart:5:23 • unused_field
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/utils/custom_toast.dart:67:33 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/utils/custom_toast.dart:79:73 • deprecated_member_use
+warning • Unused import: 'package:superapp/Themes/app_colors.dart' • lib/core/widgets/custom_dropdown.dart:2:8 • unused_import
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/core/widgets/custom_dropdown.dart:25:9 • deprecated_member_use
+warning • Unused import: 'package:superapp/Themes/app_colors.dart' • lib/core/widgets/custom_textfield.dart:2:8 • unused_import
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/widgets/custom_textfield.dart:35:48 • deprecated_member_use
+warning • Unused import: 'package:superapp/features/auth/models/user_model.dart' • lib/features/auth/bloc/auth_event.dart:1:8 • unused_import
+   info • Don't invoke 'print' in production code • lib/features/auth/screens/login_screen.dart:51:13 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/auth/screens/login_screen.dart:253:58 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/features/auth/screens/register_screen.dart:54:13 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/auth/screens/register_screen.dart:258:43 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/bootmnav/bottm_navbar.dart:91:37 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/chat/screens/message_detail_screen.dart:115:48 • deprecated_member_use
+warning • Unused import: '../../../core/constants/api_constants.dart' • lib/features/home/services/home_api_service.dart:2:8 • unused_import
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/choose_category_sheet.dart:67:37 • deprecated_member_use
+warning • The declaration '_buildImagePicker' isn't referenced • lib/features/home/widgets/final_listing_sheet.dart:556:10 • unused_element
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/final_listing_sheet.dart:579:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/final_listing_sheet.dart:581:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/final_listing_sheet.dart:760:49 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/final_listing_sheet.dart:1037:35 • deprecated_member_use
+   info • The 'child' argument should be last in widget constructor invocations • lib/features/home/widgets/final_listing_sheet.dart:1074:23 • sort_child_properties_last
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/final_listing_sheet.dart:1086:47 • deprecated_member_use
+warning • The operand can't be 'null', so the condition is always 'true' • lib/features/home/widgets/marketplace_product_widgets.dart:106:57 • unnecessary_null_comparison
+warning • The '!' will have no effect because the receiver can't be null • lib/features/home/widgets/marketplace_product_widgets.dart:108:56 • unnecessary_non_null_assertion
+warning • The operand can't be 'null', so the condition is always 'true' • lib/features/home/widgets/marketplace_product_widgets.dart:130:37 • unnecessary_null_comparison
+warning • The operand can't be 'null', so the condition is always 'true' • lib/features/home/widgets/marketplace_product_widgets.dart:130:58 • unnecessary_null_comparison
+warning • The '!' will have no effect because the receiver can't be null • lib/features/home/widgets/marketplace_product_widgets.dart:131:44 • unnecessary_non_null_assertion
+warning • The '!' will have no effect because the receiver can't be null • lib/features/home/widgets/marketplace_product_widgets.dart:131:63 • unnecessary_non_null_assertion
+warning • Dead code • lib/features/home/widgets/marketplace_product_widgets.dart:132:33 • dead_code
+warning • Dead code • lib/features/home/widgets/marketplace_product_widgets.dart:168:43 • dead_code
+warning • The left operand can't be null, so the right operand is never executed • lib/features/home/widgets/marketplace_product_widgets.dart:168:46 • dead_null_aware_expression
+warning • The operand can't be 'null', so the condition is always 'true' • lib/features/home/widgets/marketplace_product_widgets.dart:280:55 • unnecessary_null_comparison
+warning • The '!' will have no effect because the receiver can't be null • lib/features/home/widgets/marketplace_product_widgets.dart:282:54 • unnecessary_non_null_assertion
+warning • The operand can't be 'null', so the condition is always 'true' • lib/features/home/widgets/marketplace_product_widgets.dart:304:35 • unnecessary_null_comparison
+warning • The operand can't be 'null', so the condition is always 'true' • lib/features/home/widgets/marketplace_product_widgets.dart:304:56 • unnecessary_null_comparison
+warning • The '!' will have no effect because the receiver can't be null • lib/features/home/widgets/marketplace_product_widgets.dart:305:42 • unnecessary_non_null_assertion
+warning • The '!' will have no effect because the receiver can't be null • lib/features/home/widgets/marketplace_product_widgets.dart:305:61 • unnecessary_non_null_assertion
+warning • Dead code • lib/features/home/widgets/marketplace_product_widgets.dart:306:31 • dead_code
+warning • Dead code • lib/features/home/widgets/marketplace_product_widgets.dart:338:41 • dead_code
+warning • The left operand can't be null, so the right operand is never executed • lib/features/home/widgets/marketplace_product_widgets.dart:338:44 • dead_null_aware_expression
+warning • Unused import: 'package:superapp/features/home/widgets/select_city_sheet.dart' • lib/features/home/widgets/post_ad_flow.dart:2:8 • unused_import
+warning • The operand can't be 'null', so the condition is always 'true' • lib/features/home/widgets/product_detail_modal.dart:157:103 • unnecessary_null_comparison
+warning • The '!' will have no effect because the receiver can't be null • lib/features/home/widgets/product_detail_modal.dart:159:71 • unnecessary_non_null_assertion
+warning • The operand can't be 'null', so the condition is always 'true' • lib/features/home/widgets/product_detail_modal.dart:181:54 • unnecessary_null_comparison
+warning • The operand can't be 'null', so the condition is always 'true' • lib/features/home/widgets/product_detail_modal.dart:181:82 • unnecessary_null_comparison
+warning • The '!' will have no effect because the receiver can't be null • lib/features/home/widgets/product_detail_modal.dart:182:59 • unnecessary_non_null_assertion
+warning • The '!' will have no effect because the receiver can't be null • lib/features/home/widgets/product_detail_modal.dart:182:85 • unnecessary_non_null_assertion
+warning • Dead code • lib/features/home/widgets/product_detail_modal.dart:183:41 • dead_code
+warning • Dead code • lib/features/home/widgets/product_detail_modal.dart:195:50 • dead_code
+warning • The left operand can't be null, so the right operand is never executed • lib/features/home/widgets/product_detail_modal.dart:195:53 • dead_null_aware_expression
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/features/home/widgets/product_detail_modal.dart:209:48 • invalid_null_aware_operator
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/features/home/widgets/product_detail_modal.dart:210:60 • invalid_null_aware_operator
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/features/home/widgets/product_detail_modal.dart:250:52 • invalid_null_aware_operator
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/features/home/widgets/product_detail_modal.dart:259:52 • invalid_null_aware_operator
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:457:64 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:493:64 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:529:64 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:700:65 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:769:65 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:844:65 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:901:68 • deprecated_member_use
+  error • The name 'CarListingModel' isn't a class • lib/features/home/widgets/product_detail_modal.dart:986:48 • creation_with_non_type
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:1030:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/product_detail_modal.dart:1032:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/home/widgets/select_city_sheet.dart:68:37 • deprecated_member_use
+warning • Unused import: 'dart:convert' • lib/features/marketplace/models/car_listing_metadata.dart:1:8 • unused_import
+   info • Constructors in '@immutable' classes should be declared as 'const' • lib/features/marketplace/models/car_listing_metadata.dart:26:3 • prefer_const_constructors_in_immutables
+   info • Constructors in '@immutable' classes should be declared as 'const' • lib/features/marketplace/models/car_listing_metadata.dart:100:3 • prefer_const_constructors_in_immutables
+   info • Constructors in '@immutable' classes should be declared as 'const' • lib/features/marketplace/models/car_listing_metadata.dart:129:3 • prefer_const_constructors_in_immutables
+   info • Constructors in '@immutable' classes should be declared as 'const' • lib/features/marketplace/models/car_listing_metadata.dart:156:3 • prefer_const_constructors_in_immutables
+warning • Unused import: 'package:superapp/Themes/app_colors.dart' • lib/features/profile/widgets/profile_skeleton.dart:3:8 • unused_import
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/profile/widgets/profile_skeleton.dart:11:30 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/profile/widgets/profile_skeleton.dart:12:35 • deprecated_member_use
+

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:superapp/Themes/app_colors.dart';
 import 'package:superapp/features/home/widgets/marketplace_home_widgets.dart';
-import 'package:superapp/features/chat/screens/message_detail_screen.dart';
+import '../bloc/chat_bloc.dart';
+import '../bloc/chat_event.dart';
+import '../bloc/chat_state.dart';
+import '../models/chat_model.dart';
+import 'chat_detail_screen.dart';
+import 'package:superapp/core/widgets/skeleton_loading.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -12,6 +18,13 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   String _selectedTab = 'All';
+  List<ChatSession> _sessions = []; // Local cache to prevent skeleton during refreshes
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ChatBloc>().add(FetchChatsEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +42,21 @@ class _ChatScreenState extends State<ChatScreen> {
                   const SizedBox(height: 10),
                   const HeaderWidget(),
                   const SizedBox(height: 30),
-                  const Text(
-                    'Messages (3)',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontFamily: 'SF Pro',
-                      fontWeight: FontWeight.w700,
-                    ),
+                  BlocBuilder<ChatBloc, ChatState>(
+                    builder: (context, state) {
+                      if (state is ChatLoaded) {
+                        _sessions = state.sessions;
+                      }
+                      return Text(
+                        'Messages (${_sessions.length})',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontFamily: 'SF Pro',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 16),
                   ChatTabBar(
@@ -52,37 +72,70 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             Expanded(
-              child: _selectedTab == 'Buying'
-                  ? const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.chat_bubble_outline,
-                            color: Colors.grey,
-                            size: 64,
-                          ),
-                          SizedBox(height: 16),
-                          Text(
-                            'No chats found',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 16,
-                              fontFamily: 'SF Pro',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView.separated(
-                      itemCount: 7,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 5),
+              child: BlocBuilder<ChatBloc, ChatState>(
+                builder: (context, state) {
+                  if (state is ChatLoaded) {
+                    _sessions = state.sessions;
+                  }
+
+                  if (_sessions.isNotEmpty) {
+                    // Show the cached list even if we are loading or in another state
+                    return ListView.separated(
+                      padding: const EdgeInsets.only(top: 10),
+                      itemCount: _sessions.length,
+                      separatorBuilder: (context, index) => const SizedBox(height: 1),
                       itemBuilder: (context, index) {
-                        return ChatCard(index: index);
+                        final session = _sessions[index];
+                        return ChatCard(
+                          session: session,
+                          onTap: () {
+                            // Optimistically clear unread count when opening the chat
+                            setState(() {
+                              session.unreadCount = 0;
+                            });
+                            
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChatDetailScreen(
+                                  receiverId: session.otherUserId,
+                                  receiverName: session.otherUserName,
+                                  conversationId: session.id,
+                                ),
+                              ),
+                            ).then((_) {
+                              if (context.mounted) {
+                                context.read<ChatBloc>().add(FetchChatsEvent());
+                              }
+                            });
+                          },
+                        );
                       },
-                    ),
+                    );
+                  } else if (state is ChatLoading || state is ChatInitial) {
+                    // Only show skeleton if we have NO cached data
+                    return ListView.separated(
+                      padding: const EdgeInsets.only(top: 10),
+                      itemCount: 6,
+                      separatorBuilder: (context, index) => const SizedBox(height: 1),
+                      itemBuilder: (context, index) => const SkeletonLoading(
+                        width: double.infinity,
+                        height: 80,
+                        borderRadius: 0,
+                      ),
+                    );
+                  } else if (state is ChatError) {
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    );
+                  }
+                  
+                  return const SizedBox();
+                },
+              ),
             ),
           ],
         ),
@@ -128,7 +181,7 @@ class ChatTabBar extends StatelessWidget {
                   color: AppColors.thirdcolor,
                 )
               else
-                const SizedBox(height: 6), // Spacer to prevent jump
+                const SizedBox(height: 6),
             ],
           ),
         );
@@ -138,43 +191,19 @@ class ChatTabBar extends StatelessWidget {
 }
 
 class ChatCard extends StatelessWidget {
-  final int index;
-  const ChatCard({super.key, required this.index});
+  final ChatSession session;
+  final VoidCallback onTap; // Added onTap callback
+  
+  const ChatCard({
+    super.key, 
+    required this.session,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final names = [
-      'Abbas Ali',
-      'Alexandra will',
-      'James Jacob',
-      'Uma Krishnan',
-      'Sara Charles',
-      'Mohammed Aman',
-      'Uma Krishnan',
-    ];
-    final avatars = [
-      'https://i.pravatar.cc/150?img=11',
-      'https://i.pravatar.cc/150?img=5',
-      'https://i.pravatar.cc/150?img=12',
-      'https://i.pravatar.cc/150?img=16',
-      'https://i.pravatar.cc/150?img=20',
-      'https://i.pravatar.cc/150?img=33',
-      'https://i.pravatar.cc/150?img=26',
-    ];
-    final unreadCounts = [2, 1, 0, 0, 3, 0, 0];
-
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MessageDetailScreen(
-              name: names[index],
-              avatar: avatars[index],
-            ),
-          ),
-        );
-      },
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: const BoxDecoration(color: Color(0xFF1C1C1A)),
@@ -182,7 +211,9 @@ class ChatCard extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 24,
-              backgroundImage: NetworkImage(avatars[index]),
+              backgroundImage: NetworkImage(
+                session.otherUserProfileImage ?? "https://i.pravatar.cc/150?img=11",
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -190,24 +221,22 @@ class ChatCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    names[index],
+                    session.otherUserName,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
-                      fontFamily: 'SF Pro',
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Opacity(
-                    opacity: 0.54,
-                    child: const Text(
-                      'Get up to 4x more views! Featured ads appear above the standard Ads.',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontFamily: 'SF Pro',
-                        fontWeight: FontWeight.w400,
-                      ),
+                  const SizedBox(height: 4),
+                  Text(
+                    session.lastMessage,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
@@ -217,20 +246,20 @@ class ChatCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Text(
-                  '03:26 pm',
-                  style: TextStyle(color: AppColors.thirdcolor, fontSize: 12),
+                Text(
+                  _formatTime(session.lastMessageTime),
+                  style: const TextStyle(color: AppColors.thirdcolor, fontSize: 12),
                 ),
                 const SizedBox(height: 8),
-                if (unreadCounts[index] > 0)
+                if (session.unreadCount > 0)
                   Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: const BoxDecoration(
                       color: AppColors.btnColor,
                       shape: BoxShape.circle,
                     ),
                     child: Text(
-                      '${unreadCounts[index]}',
+                      '${session.unreadCount}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
@@ -239,12 +268,16 @@ class ChatCard extends StatelessWidget {
                     ),
                   )
                 else
-                  const SizedBox(height: 22), // Maintain height
+                  const SizedBox(height: 22),
               ],
             ),
           ],
         ),
       ),
     );
+  }
+
+  String _formatTime(DateTime time) {
+    return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
   }
 }

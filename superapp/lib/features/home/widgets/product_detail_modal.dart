@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../Themes/app_colors.dart';
 import '../../../Themes/app_images.dart';
 import 'product_stats_and_price.dart';
 import 'marketplace_product_widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superapp/core/utils/custom_toast.dart';
+import 'package:superapp/features/favourite/bloc/favorite_bloc.dart';
+import 'package:superapp/features/favourite/bloc/favorite_event.dart';
+import 'package:superapp/features/favourite/bloc/favorite_state.dart';
+import '../models/home_data_model.dart';
+import '../../chat/screens/chat_detail_screen.dart';
 
 class ProductDetailModal extends StatefulWidget {
-  final String title;
-  final String image;
+  final FreshRecommendation car;
   final String heroTag;
 
   const ProductDetailModal({
     super.key,
-    required this.title,
-    required this.image,
+    required this.car,
     required this.heroTag,
   });
 
@@ -26,6 +32,13 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
   bool _isTechExpanded = false;
   bool _isComfortExpanded = false;
   bool _isExteriorExpanded = false;
+  late bool _isFavorite;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.car.isFavorite;
+  }
 
   // Finance Calculator State
   double _carPrice = 45000;
@@ -45,9 +58,29 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Center(
-      child: GestureDetector(
-        onTap: () {
+    return BlocListener<FavoriteBloc, FavoriteState>(
+      listener: (context, state) {
+        if (state is ToggleFavoriteSuccess && state.carListingId == widget.car.id) {
+          CustomToast.show(
+            context,
+            title: 'Success',
+            message: state.message,
+          );
+        } else if (state is FavoriteError) {
+          CustomToast.show(
+            context,
+            title: 'Error',
+            message: state.message,
+            isError: true,
+          );
+          setState(() {
+            _isFavorite = widget.car.isFavorite;
+          });
+        }
+      },
+      child: Center(
+        child: GestureDetector(
+          onTap: () {
           if (!_isExpanded) {
             setState(() {
               _isExpanded = true;
@@ -138,10 +171,27 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                const Icon(
-                                  Icons.favorite_border,
-                                  color: AppColors.primary,
-                                  size: 24,
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () {
+                                    context.read<FavoriteBloc>().add(
+                                          ToggleFavoriteEvent(
+                                              carListingId: widget.car.id),
+                                        );
+                                    setState(() {
+                                      _isFavorite = !_isFavorite;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    _isFavorite
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: _isFavorite
+                                        ? Colors.red
+                                        : AppColors.primary,
+                                    size: 24,
+                                  ),
                                 ),
                               ],
                             ),
@@ -155,10 +205,21 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                               duration: const Duration(milliseconds: 900),
                               curve: Curves.fastOutSlowIn,
                               height: _isExpanded ? 250 : 150,
-                              child: Image.asset(
-                                widget.image,
-                                fit: BoxFit.contain,
-                              ),
+                              child: widget.car.images.isNotEmpty
+                                  ? Image.network(
+                                      widget.car.images.first.imageUrl,
+                                      fit: BoxFit.contain,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Image.asset(
+                                                AppImages.carimage,
+                                                fit: BoxFit.contain,
+                                              ),
+                                    )
+                                  : Image.asset(
+                                      AppImages.carimage,
+                                      fit: BoxFit.contain,
+                                    ),
                             ),
                           ),
                         ),
@@ -168,7 +229,9 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                           child: Material(
                             color: Colors.transparent,
                             child: Text(
-                              widget.title,
+                              widget.car.title.isNotEmpty
+                                  ? widget.car.title
+                                  : '${widget.car.make.name} ${widget.car.model.name}',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
@@ -179,9 +242,11 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                           ),
                         ),
                         const SizedBox(height: 5),
-                        const Text(
-                          'Lorem ipsum dolor sit amet consectetur.',
-                          style: TextStyle(
+                        Text(
+                          widget.car.description ?? 'No description available.',
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
                             color: Color(0xFFB5B5B5),
                             fontSize: 12,
                             fontFamily: 'SF Pro',
@@ -189,7 +254,12 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        ProductStatsAndPrice(heroTag: widget.heroTag),
+                        ProductStatsAndPrice(
+                          heroTag: widget.heroTag,
+                          price: 'AED ${_formatPrice(widget.car.price)}',
+                          year: widget.car.year.toString(),
+                          kilometers: widget.car.kilometers.toString(),
+                        ),
                         const SizedBox(height: 25),
                         const Opacity(
                           opacity: 0.54,
@@ -211,11 +281,12 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                               height: 60,
                               decoration: ShapeDecoration(
                                 color: const Color(0xFFFFFFFF),
-                                image: const DecorationImage(
+                                image: DecorationImage(
                                   image: NetworkImage(
-                                    "https://uploads.vw-mms.de/system/production/images/vwn/030/145/images/7a0d84d3b718c9a621100e43e581278433114c82/DB2019AL01950_web_1600.jpg?1649155356",
+                                    widget.car.user.profileImageUrl ??
+                                        "https://uploads.vw-mms.de/system/production/images/vwn/030/145/images/7a0d84d3b718c9a621100e43e581278433114c82/DB2019AL01950_web_1600.jpg?1649155356",
                                   ),
-                                  fit: BoxFit.contain,
+                                  fit: BoxFit.cover,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -223,13 +294,13 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                               ),
                             ),
                             const SizedBox(width: 12),
-                            const Expanded(
+                            Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'PERFECT AUTOMOBILES TRADING L.L.C',
-                                    style: TextStyle(
+                                    widget.car.user.name,
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
                                       fontFamily: 'SF Pro',
@@ -237,8 +308,10 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                                     ),
                                   ),
                                   Text(
-                                    'Dealer',
-                                    style: TextStyle(
+                                    widget.car.user.roleName == 'dealer'
+                                        ? 'Dealer'
+                                        : 'Private Seller',
+                                    style: const TextStyle(
                                       color: Color(0xFFB5B5B5),
                                       fontSize: 14,
                                       fontFamily: 'SF Pro',
@@ -252,37 +325,50 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                         ),
                         if (_isExpanded) ...[
                           const SizedBox(height: 24),
-                          Container(
-                            height: 46,
-                            width: double.infinity,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                  width: 1,
-                                  color: Color(0xFF0FF0FC),
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  AppImages.whatsapp,
-                                  height: 21,
-                                  width: 21,
-                                ),
-                                const SizedBox(width: 5),
-                                const Text(
-                                  'Whatsapp',
-                                  style: TextStyle(
-                                    color: Color(0xFF007076),
-                                    fontSize: 16,
-                                    fontFamily: 'SF Pro',
-                                    fontWeight: FontWeight.w500,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatDetailScreen(
+                                    receiverId: widget.car.user.id,
+                                    receiverName: widget.car.user.name,
                                   ),
                                 ),
-                              ],
+                              );
+                            },
+                            child: Container(
+                              height: 46,
+                              width: double.infinity,
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                    width: 1,
+                                    color: Color(0xFF0FF0FC),
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.chat_bubble_outline,
+                                    color: Color(0xFF0FF0FC),
+                                    size: 21,
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Chat',
+                                    style: TextStyle(
+                                      color: Color(0xFF0FF0FC),
+                                      fontSize: 16,
+                                      fontFamily: 'SF Pro',
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(height: 24),
@@ -419,11 +505,11 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                               ),
                               if (_isSafetyExpanded) ...[
                                 const SizedBox(height: 16),
-                                const Opacity(
+                                Opacity(
                                   opacity: 0.54,
                                   child: Text(
-                                    'Anti-Lock Brakes (ABS)\nTyre Pressure Monitoring System (TPMS)\nAirbags\nParking Sensors - Rear\nRear View Camera\nTraction Control',
-                                    style: TextStyle(
+                                    _getFeaturesString(widget.car.safetyFeatures),
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
                                       fontFamily: 'SF Pro',
@@ -468,6 +554,19 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                               ),
                               if (_isTechExpanded) ...[
                                 const SizedBox(height: 16),
+                                Opacity(
+                                  opacity: 0.54,
+                                  child: Text(
+                                    _getFeaturesString(widget.car.techFeatures),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontFamily: 'SF Pro',
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.71,
+                                    ),
+                                  ),
+                                ),
                               ],
                               const SizedBox(height: 16),
                               Divider(
@@ -504,6 +603,19 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                               ),
                               if (_isComfortExpanded) ...[
                                 const SizedBox(height: 16),
+                                Opacity(
+                                  opacity: 0.54,
+                                  child: Text(
+                                    _getFeaturesString(widget.car.comfortFeatures),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontFamily: 'SF Pro',
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.71,
+                                    ),
+                                  ),
+                                ),
                               ],
                               const SizedBox(height: 16),
                               Divider(
@@ -540,6 +652,19 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                               ),
                               if (_isExteriorExpanded) ...[
                                 const SizedBox(height: 16),
+                                Opacity(
+                                  opacity: 0.54,
+                                  child: Text(
+                                    _getFeaturesString(widget.car.exteriorFeatures),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontFamily: 'SF Pro',
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.71,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ],
                           ),
@@ -916,11 +1041,11 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          const Opacity(
+                          Opacity(
                             opacity: 0.54,
                             child: Text(
-                              'Ras Al Khor Industrial 2, Dubai, UAE',
-                              style: TextStyle(
+                              widget.car.locationName ?? 'Location not provided',
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                               ),
@@ -934,13 +1059,28 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                               color: const Color(0xFF393938),
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            child: const Center(
-                              child: Text(
-                                "map",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                  target: LatLng(
+                                    double.tryParse(widget.car.latitude) ?? 25.2048,
+                                    double.tryParse(widget.car.longitude) ?? 55.2708,
+                                  ),
+                                  zoom: 14,
                                 ),
+                                markers: {
+                                  Marker(
+                                    markerId: const MarkerId('seller_location'),
+                                    position: LatLng(
+                                      double.tryParse(widget.car.latitude) ?? 25.2048,
+                                      double.tryParse(widget.car.longitude) ?? 55.2708,
+                                    ),
+                                  ),
+                                },
+                                zoomControlsEnabled: false,
+                                mapToolbarEnabled: false,
+                                myLocationButtonEnabled: false,
                               ),
                             ),
                           ),
@@ -962,7 +1102,10 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
                               itemBuilder: (context, index) {
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 8),
-                                  child: RecommendationWidget(index: index),
+                                  child: RecommendationWidget(
+                                    index: index,
+                                    car: widget.car,
+                                  ),
                                 );
                               },
                             ),
@@ -977,7 +1120,25 @@ class _ProductDetailModalState extends State<ProductDetailModal> {
           ),
         ),
       ),
+    ),
     );
+  }
+
+  String _getFeaturesString(List<Feature> features) {
+    if (features.isEmpty) return 'No features listed';
+    return features.map((e) => e.name).join('\n');
+  }
+
+  String _formatPrice(String? price) {
+    if (price == null) return '0';
+    double? parsed = double.tryParse(price);
+    if (parsed == null) return price;
+    return parsed
+        .toStringAsFixed(0)
+        .replaceAllMapped(
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]},',
+        );
   }
 
   Widget _buildSlider({

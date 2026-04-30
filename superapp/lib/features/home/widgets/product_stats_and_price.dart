@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 class ProductStatsAndPrice extends StatelessWidget {
   final String heroTag;
   final String price;
+  final String? year;
+  final String? kilometers;
 
   const ProductStatsAndPrice({
     super.key,
     required this.heroTag,
-    this.price = 'AED 45,000',
+    required this.price,
+    this.year,
+    this.kilometers,
   });
 
   @override
@@ -29,9 +33,9 @@ class ProductStatsAndPrice extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatItem(Icons.calendar_today_outlined, '2022'),
+                _buildStatItem(Icons.calendar_today_outlined, year ?? 'N/A'),
                 _buildDivider(30),
-                _buildStatItem(Icons.speed_outlined, '42,000 km'),
+                _buildStatItem(Icons.speed_outlined, kilometers != null ? '$kilometers km' : 'N/A'),
                 _buildDivider(30),
                 _buildStatItem(
                   Icons.settings_input_component_outlined,

@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../../Themes/app_colors.dart';
 import '../../../Themes/app_images.dart';
+import '../models/home_data_model.dart';
 import 'product_detail_modal.dart';
+import 'package:superapp/core/widgets/skeleton_loading.dart';
 
 class RecommendationWidget extends StatelessWidget {
   final int index;
-  const RecommendationWidget({super.key, required this.index});
+  final FreshRecommendation car;
+  const RecommendationWidget({
+    super.key,
+    required this.index,
+    required this.car,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +25,7 @@ class RecommendationWidget extends StatelessWidget {
           barrierColor: Colors.black.withValues(alpha: 0.50),
           transitionDuration: const Duration(milliseconds: 300),
           pageBuilder: (context, animation1, animation2) {
-            return ProductDetailModal(
-              title: 'Tesla Model 3',
-              image: AppImages.carimage,
-              heroTag: 'rec_$index',
-            );
+            return ProductDetailModal(car: car, heroTag: 'rec_$index');
           },
           transitionBuilder: (context, animation1, animation2, child) {
             return FadeTransition(
@@ -96,17 +99,43 @@ class RecommendationWidget extends StatelessWidget {
                   Center(
                     child: Hero(
                       tag: 'rec_$index',
-                      child: Image.asset(
-                        AppImages.carimage,
-                        height: 80,
-                        fit: BoxFit.contain,
-                      ),
+                      child: car.images.isNotEmpty
+                          ? Image.network(
+                              car.images.first.imageUrl,
+                              height: 80,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return const SkeletonLoading(
+                                    width: double.infinity,
+                                    height: 80,
+                                    borderRadius: 12);
+                              },
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.asset(
+                                AppImages.carimage,
+                                height: 80,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Image.asset(
+                              AppImages.carimage,
+                              height: 80,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
                   const Spacer(),
-                  const Text(
-                    'Tesla Model 3',
-                    style: TextStyle(
+                  Text(
+                    car.title.isNotEmpty
+                        ? car.title
+                        : '${car.make.name} ${car.model.name}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
                       color: AppColors.primary,
                       fontSize: 14,
                       fontFamily: 'SF Pro',
@@ -114,7 +143,7 @@ class RecommendationWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  const Row(
+                  Row(
                     children: [
                       Icon(
                         Icons.battery_0_bar,
@@ -123,20 +152,24 @@ class RecommendationWidget extends StatelessWidget {
                       ),
                       SizedBox(width: 5),
                       Text(
-                        '98%',
-                        style: TextStyle(
+                        '98%', // Can replace with actual condition/battery if available
+                        style: const TextStyle(
                           color: AppColors.primary,
                           fontSize: 12,
                           fontFamily: 'SF Pro',
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      Spacer(),
-                      Icon(Icons.speed, color: AppColors.primary, size: 15),
-                      SizedBox(width: 5),
+                      const Spacer(),
+                      const Icon(
+                        Icons.speed,
+                        color: AppColors.primary,
+                        size: 15,
+                      ),
+                      const SizedBox(width: 5),
                       Text(
-                        '358 mi',
-                        style: TextStyle(
+                        '${car.kilometers} km',
+                        style: const TextStyle(
                           color: AppColors.primary,
                           fontSize: 12,
                           fontFamily: 'SF Pro',
@@ -157,7 +190,8 @@ class RecommendationWidget extends StatelessWidget {
 
 class PopularWidget extends StatelessWidget {
   final int index;
-  const PopularWidget({super.key, required this.index});
+  final FreshRecommendation car;
+  const PopularWidget({super.key, required this.index, required this.car});
 
   @override
   Widget build(BuildContext context) {
@@ -170,11 +204,7 @@ class PopularWidget extends StatelessWidget {
           barrierColor: Colors.black.withValues(alpha: 0.50),
           transitionDuration: const Duration(milliseconds: 300),
           pageBuilder: (context, animation1, animation2) {
-            return ProductDetailModal(
-              title: 'Tesla Model 3',
-              image: AppImages.popularcar,
-              heroTag: 'pop_$index',
-            );
+            return ProductDetailModal(car: car, heroTag: 'pop_$index');
           },
           transitionBuilder: (context, animation1, animation2, child) {
             return FadeTransition(
@@ -245,17 +275,43 @@ class PopularWidget extends StatelessWidget {
                 Center(
                   child: Hero(
                     tag: 'pop_$index',
-                    child: Image.asset(
-                      AppImages.popularcar,
-                      height: 70,
-                      fit: BoxFit.contain,
-                    ),
+                    child: car.images.isNotEmpty
+                        ? Image.network(
+                            car.images.first.imageUrl,
+                            height: 70,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return const SkeletonLoading(
+                                  width: double.infinity,
+                                  height: 70,
+                                  borderRadius: 12);
+                            },
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.asset(
+                              AppImages.popularcar,
+                              height: 70,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Image.asset(
+                            AppImages.popularcar,
+                            height: 70,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
                 const Spacer(),
-                const Text(
-                  'Tesla Model 3',
-                  style: TextStyle(
+                Text(
+                  car.title.isNotEmpty
+                      ? car.title
+                      : '${car.make.name} ${car.model.name}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
                     color: AppColors.primary,
                     fontSize: 14,
                     fontFamily: 'SF Pro',
@@ -263,7 +319,7 @@ class PopularWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 5),
-                const Row(
+                Row(
                   children: [
                     Icon(
                       Icons.battery_0_bar,
@@ -272,20 +328,20 @@ class PopularWidget extends StatelessWidget {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      '98%',
-                      style: TextStyle(
+                      '98%', // Can replace with actual condition/battery if available
+                      style: const TextStyle(
                         color: AppColors.primary,
                         fontSize: 12,
                         fontFamily: 'SF Pro',
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    Spacer(),
-                    Icon(Icons.speed, color: AppColors.primary, size: 15),
-                    SizedBox(width: 5),
+                    const Spacer(),
+                    const Icon(Icons.speed, color: AppColors.primary, size: 15),
+                    const SizedBox(width: 5),
                     Text(
-                      '358 mi',
-                      style: TextStyle(
+                      '${car.kilometers} km',
+                      style: const TextStyle(
                         color: AppColors.primary,
                         fontSize: 12,
                         fontFamily: 'SF Pro',
